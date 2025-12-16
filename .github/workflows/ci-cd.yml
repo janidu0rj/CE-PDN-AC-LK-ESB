@@ -28,7 +28,7 @@ jobs:
         run: mvn -B -q clean compile
 
   test-run:
-    name: Testing - Unit Tests
+    name: Testing - Tests (safe when none yet)
     if: github.ref == 'refs/heads/testing'
     runs-on: ubuntu-latest
     steps:
@@ -41,8 +41,9 @@ jobs:
           java-version: '21'
           cache: 'maven'
 
-      - name: Run tests
-        run: mvn -B test
+      # This will NOT fail if no tests exist, but will run them once you add tests later.
+      - name: Run tests (skip failure if none yet)
+        run: mvn -B test -DfailIfNoTests=false
 
   main-full:
     name: Main - Full Build
@@ -59,7 +60,7 @@ jobs:
           cache: 'maven'
 
       - name: Full verification
-        run: mvn -B clean verify
+        run: mvn -B clean verify -DfailIfNoTests=false
 
       - name: Package
-        run: mvn -B package
+        run: mvn -B package -DfailIfNoTests=false
